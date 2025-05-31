@@ -539,6 +539,24 @@ export class MoonCalculator {
     { data: [null], label: 'My locator', azimuth: [null] },
     { data: [null], label: 'DX locator' },
   ]
+  isLocatorValid(locator: string){
+    var loc = locator.toLowerCase()
+    if (loc.length != 6 ||
+      loc[0] < 'a'      ||
+      loc[0] > 'r'      ||
+      loc[1] < 'a'      ||
+      loc[1] > 'r'      ||
+      loc[2] < '0'      ||
+      loc[2] > '9'      ||
+      loc[3] < '0'      ||
+      loc[3] > '9'      ||
+      loc[4] < 'a'      ||
+      loc[4] > 'x'      ||
+      loc[5] < 'a'      ||
+      loc[5] > 'x')
+        return false
+    return true
+  }
  
   
   julianDayNumber(year: number, month: number, day: number, hour: number) {
