@@ -1,6 +1,5 @@
-import {Component, OnChanges, SimpleChanges, Input, ViewChild} from '@angular/core'
+import {Component, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core'
 import { BaseChartDirective } from 'ng2-charts'
-import { FormsModule } from '@angular/forms';
 
 function div(x: number, y: number) {
   return ~~(x / y) // integer division
@@ -439,21 +438,24 @@ class Moon {
 
 @Component({
   selector: 'app-moon-calculator',
-  imports: [FormsModule],
+  standalone: true,
+  imports: [],
   templateUrl: './moon-calculator.html',
   styleUrl: './moon-calculator.css'
 })
 
 export class MoonCalculator implements OnChanges {
   @ViewChild(BaseChartDirective) chart!: BaseChartDirective
+  @Input() data!: string;
+
 
   earth: Earth
   sun: Sun
   moon: Moon
   date: Date
   
-  myLocator: string = 'KP11MK'  //localStorage.getItem('myLocator'); TODO:
-  dxLocator: string = 'KP00MK'
+  @Input() myLocator!: string  //localStorage.getItem('myLocator'); TODO:
+  @Input() dxLocator: string = ''
   
   myLongitude: number
   myLatitude: number
@@ -621,11 +623,13 @@ export class MoonCalculator implements OnChanges {
   }
   
   ngOnChanges(changes: SimpleChanges) {
+	console.log('change')
 
     for (let propName in changes) {  
 
-      if (propName === 'myLocator' || propName === 'dxLocator')
+      if (propName === 'myLocator' || propName === 'dxLocator') {
         this.update()
+	  }
     }
   }
 
