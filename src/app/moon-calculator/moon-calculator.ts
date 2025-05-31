@@ -444,5 +444,6 @@ class Moon {
 })
 
 export class MoonCalculator {
+  @ViewChild(BaseChartDirective) chart!: BaseChartDirective
 
 }
