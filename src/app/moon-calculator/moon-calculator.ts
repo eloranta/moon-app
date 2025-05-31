@@ -446,4 +446,50 @@ class Moon {
 export class MoonCalculator {
   @ViewChild(BaseChartDirective) chart!: BaseChartDirective
 
+  earth: Earth
+  sun: Sun
+  moon: Moon
+  date: Date
+  
+  @Input() locator: string
+  @Input() dxLocator: string
+
+  myLongitude: number
+  myLatitude: number
+  dxLongitude: number
+  dxLatitude: number
+
+  utcYear: number
+  utcMonth: number
+  utcDay: number
+  utcHour: number
+  utcMinutes: number
+  utcSeconds: number
+  dayNumber: number
+
+  constructor(){
+    this.earth = new Earth
+    this.sun = new Sun
+    this.moon = new Moon
+    this.date = new Date()
+	  
+	this.locator = ""
+	this.dxLocator = ""
+
+	this.myLongitude = 0
+	this.myLatitude = 0
+	this.dxLongitude = 0
+	this.dxLatitude = 0
+
+    this.utcYear = this.date.getUTCFullYear()
+    this.utcMonth = this.date.getUTCMonth() + 1
+    this.utcDay = this.date.getUTCDate()
+    this.utcHour = this.date.getUTCHours()
+    this.utcMinutes = this.date.getUTCMinutes()
+    this.utcSeconds = this.date.getUTCSeconds()
+    this.dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, this.utcHour + this.utcMinutes / 60.0 + this.utcSeconds / 3600.0)
+  }
+    julianDayNumber(year: number, month: number, day: number, hour: number) {
+    return 367 * year - div((7 * (year + (div((month + 9), 12)))), 4) + div((275 * month), 9) + day - 730530 + hour / 24.0
+  }
 }
