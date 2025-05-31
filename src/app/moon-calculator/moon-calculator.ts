@@ -571,7 +571,7 @@ export class MoonCalculator implements OnChanges {
     this.utcDay = this.date.getDate()
 
     if (this.isLocatorValid(this.myLocator)){
-      
+      console.log('valid myLocator')
       localStorage.setItem('myLocator', this.myLocator);
       
       this.myLatitude = this.observerLatitude(this.myLocator)
@@ -586,6 +586,10 @@ export class MoonCalculator implements OnChanges {
       this.barChartData[0].label = this.myLocator.toUpperCase()
     }
     else{
+	  console.log('invalid myLocator')
+      this.myLatitude = 0
+      this.myLongitude = 0
+
       var i:number
       for (i = 0; i <= 48; i++) {
         this.barChartData[0].data[i] = null
@@ -625,12 +629,8 @@ export class MoonCalculator implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
 	console.log('change')
 
-    for (let propName in changes) {  
+    this.update()
 
-      if (propName === 'myLocator' || propName === 'dxLocator') {
-        this.update()
-	  }
-    }
   }
 
   observerLongitude(locator: string) {
