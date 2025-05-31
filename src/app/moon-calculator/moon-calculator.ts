@@ -489,7 +489,59 @@ export class MoonCalculator {
     this.utcSeconds = this.date.getUTCSeconds()
     this.dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, this.utcHour + this.utcMinutes / 60.0 + this.utcSeconds / 3600.0)
   }
-    julianDayNumber(year: number, month: number, day: number, hour: number) {
+  barChartOptions: any = {
+
+    tooltips: {
+      displayColors: false,
+      
+      callbacks: {
+        beforeTitle: function(tooltipItems: any, data: any) {
+           return 'UTC ' + tooltipItems[0].xLabel
+        },
+        title: function(tooltipItems: any, data: any) {
+           return 'Moon:'
+        },
+        afterTitle: function(tooltipItems: any, data: any) {
+          return 'Elevation ' + Math.round(tooltipItems[0].yLabel * 10) / 10
+        },
+        beforeBody: function (tooltipItems: any, data: any) {
+          console.log();
+          return 'Azimuth    ' + Math.round(data.datasets[0].azimuth[tooltipItems[0].index] * 10) / 10
+        },
+        label: function(tooltipItem: any, data: any) {
+          return ''
+        },
+      }
+    },  
+
+    scales: {
+      yAxes: [{
+      ticks: {
+        min: 0,
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Moon Elevation [degrees]'
+        }
+      }],
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Time [UTC]'
+        }
+      }]
+    },
+      responsive: true
+  }
+
+  public barChartLabels = ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21.30', '22:00', '22:30', '23:00', '23:30', '24:00']
+  public barChartData = [
+    { data: [null], label: 'My locator', azimuth: [null] },
+    { data: [null], label: 'DX locator' },
+  ]
+ 
+  
+  julianDayNumber(year: number, month: number, day: number, hour: number) {
     return 367 * year - div((7 * (year + (div((month + 9), 12)))), 4) + div((275 * month), 9) + day - 730530 + hour / 24.0
   }
 }
