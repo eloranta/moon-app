@@ -535,10 +535,17 @@ export class MoonCalculator {
   }
 
   public barChartLabels = ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21.30', '22:00', '22:30', '23:00', '23:30', '24:00']
-  public barChartData = [
-    { data: [null], label: 'My locator', azimuth: [null] },
-    { data: [null], label: 'DX locator' },
-  ]
+  
+  
+  public barChartData: {
+    data: (number | null)[];
+    label: string;
+    azimuth: (number | null)[];
+  }[] = [
+      { data: [null], label: 'My locator', azimuth: [null] },
+      { data: [null], label: 'DX locator', azimuth: [null] },
+	];
+  
   isLocatorValid(locator: string){
     var loc = locator.toLowerCase()
     if (loc.length != 6 ||
@@ -557,7 +564,74 @@ export class MoonCalculator {
         return false
     return true
   }
- 
+  
+  update(){
+    this.utcYear = this.date.getFullYear()
+    this.utcMonth = this.date.getMonth() + 1
+    this.utcDay = this.date.getDate()
+
+    if (this.isLocatorValid(this.locator)){
+      
+      localStorage.setItem('myLocator', this.locator);
+      
+      this.myLatitude = this.observerLatitude(this.locator)
+      this.myLongitude = this.observerLongitude(this.locator)
+      
+      var i:number
+      for (i = 0; i <= 48; i++) {
+        var dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, i/2.0)
+        this.barChartData[0].data[i] = this.moon.elevation(dayNumber, this.myLongitude, this.myLatitude, this.sun, this.earth)
+        this.barChartData[0].azimuth[i] = this.moon.azimuth(dayNumber, this.myLongitude, this.myLatitude, this.sun, this.earth)
+       }
+      this.barChartData[0].label = this.locator.toUpperCase()
+    }
+    else{
+      var i:number
+      for (i = 0; i <= 48; i++) {
+        this.barChartData[0].data[i] = null
+      }
+      this.barChartData[0].label = 'My locator'
+    }
+    
+    if (this.isLocatorValid(this.dxLocator)){
+      this.dxLatitude = this.observerLatitude(this.dxLocator)
+      this.dxLongitude = this.observerLongitude(this.dxLocator)
+      
+      var i:number
+      for (i = 0; i <= 48; i++) {
+        var dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, i/2.0)
+        this.barChartData[1].data[i] = this.moon.elevation(dayNumber, this.dxLongitude, this.dxLatitude, this.sun, this.earth)
+      }
+      this.barChartData[1].label = this.dxLocator.toUpperCase()
+    }
+    else{
+      var i:number
+      for (i = 0; i <= 48; i++) {
+        this.barChartData[1].data[i] = null
+      }
+      this.barChartData[1].label = 'DX locator'
+    }
+
+    if (this.chart && this.chart.chart){
+      this.chart.chart.update()
+    }
+  }
+  
+  observerLongitude(locator: string) {
+    locator = locator.toUpperCase()
+    let field = 20 * (locator.charCodeAt(0) - 65) - 180
+    let grid = 2 * (locator.charCodeAt(2) - 48)
+    let subGrid = 5 * (locator.charCodeAt(4) - 65) / 60
+    return field + grid + subGrid + 1/24
+  }
+
+  observerLatitude(locator: string) {
+    locator = locator.toUpperCase()
+    let field = 10 * (locator.charCodeAt(1) - 65) - 90
+    let grid = locator.charCodeAt(3) - 48
+    let subGrid = 2.5 * (locator.charCodeAt(5) - 65) / 60
+    return field + grid + subGrid + 1/48
+  }
   
   julianDayNumber(year: number, month: number, day: number, hour: number) {
     return 367 * year - div((7 * (year + (div((month + 9), 12)))), 4) + div((275 * month), 9) + day - 730530 + hour / 24.0
