@@ -452,12 +452,9 @@ export class MoonCalculator implements OnChanges {
   moon: Moon
   date: Date
   
-  locatora: string | null = localStorage.getItem('myLocator');
-  locatorb: string = ''
+  myLocator: string = 'KP11MK'  //localStorage.getItem('myLocator'); TODO:
+  dxLocator: string = 'KP00MK'
   
-  @Input() locator: string
-  @Input() dxLocator: string
-
   myLongitude: number
   myLatitude: number
   dxLongitude: number
@@ -477,9 +474,6 @@ export class MoonCalculator implements OnChanges {
     this.moon = new Moon
     this.date = new Date()
 	  
-	this.locator = ""
-	this.dxLocator = ""
-
 	this.myLongitude = 0
 	this.myLatitude = 0
 	this.dxLongitude = 0
@@ -574,12 +568,12 @@ export class MoonCalculator implements OnChanges {
     this.utcMonth = this.date.getMonth() + 1
     this.utcDay = this.date.getDate()
 
-    if (this.isLocatorValid(this.locator)){
+    if (this.isLocatorValid(this.myLocator)){
       
-      localStorage.setItem('myLocator', this.locator);
+      localStorage.setItem('myLocator', this.myLocator);
       
-      this.myLatitude = this.observerLatitude(this.locator)
-      this.myLongitude = this.observerLongitude(this.locator)
+      this.myLatitude = this.observerLatitude(this.myLocator)
+      this.myLongitude = this.observerLongitude(this.myLocator)
       
       var i:number
       for (i = 0; i <= 48; i++) {
@@ -587,7 +581,7 @@ export class MoonCalculator implements OnChanges {
         this.barChartData[0].data[i] = this.moon.elevation(dayNumber, this.myLongitude, this.myLatitude, this.sun, this.earth)
         this.barChartData[0].azimuth[i] = this.moon.azimuth(dayNumber, this.myLongitude, this.myLatitude, this.sun, this.earth)
        }
-      this.barChartData[0].label = this.locator.toUpperCase()
+      this.barChartData[0].label = this.myLocator.toUpperCase()
     }
     else{
       var i:number
@@ -630,7 +624,7 @@ export class MoonCalculator implements OnChanges {
 
     for (let propName in changes) {  
 
-      if (propName === 'locator' || propName === 'dxLocator')
+      if (propName === 'myLocator' || propName === 'dxLocator')
         this.update()
     }
   }
