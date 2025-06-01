@@ -487,7 +487,7 @@ export class MoonCalculator implements OnChanges {
     this.utcHour = this.date.getUTCHours()
     this.utcMinutes = this.date.getUTCMinutes()
     this.utcSeconds = this.date.getUTCSeconds()
-    this.dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, this.utcHour + this.utcMinutes / 60.0 + this.utcSeconds / 3600.0)
+    this.dayNumber = this.julianDayNumber(this.utcYear, this.utcMonth, this.utcDay, this.utcHour + this.utcMinutes / 60.0 + this.utcSeconds / 3600.0) // from year 2000
   }
   barChartOptions: any = {
 
@@ -650,6 +650,6 @@ export class MoonCalculator implements OnChanges {
   }
   
   julianDayNumber(year: number, month: number, day: number, hour: number) {
-    return 367 * year - div((7 * (year + (div((month + 9), 12)))), 4) + div((275 * month), 9) + day - 730530 + hour / 24.0
+    return 367 * year - div((7 * (year + (div((month + 9), 12)))), 4) + div((275 * month), 9) + day - 730530 + hour / 24.0 // from year 2000
   }
 }
